@@ -1,97 +1,115 @@
 @import "tailwindcss";
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+/* Import monospace font for cyberpunk terminal aesthetic */
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Share+Tech+Mono&display=swap');
+
+/* AAAYAFUJ OS DESIGN SYSTEM - Cyberpunk Terminal Aesthetic
+   Extracted from design reference for pixel-perfect replication
+   Colors: Electric green (#00FF41) on pure black (#000000)
 */
 
 :root {
-  /* Pure white background with crisp black text */
-  --background: 0 0% 100%;
-  --foreground: 0 0% 0%;
+  /* Cyberpunk Color Palette - Pure Black Background */
+  --background: 0 0% 0%;
+  --foreground: 123 100% 50%; /* Electric green #00FF41 */
 
-  /* Clean white cards with black text */
-  --card: 0 0% 100%;
-  --card-foreground: 0 0% 0%;
+  /* Terminal Cards - Dark with green accents */
+  --card: 0 0% 4%;
+  --card-foreground: 123 100% 50%;
 
-  /* Popovers with white background */
-  --popover: 0 0% 100%;
-  --popover-foreground: 0 0% 0%;
+  /* Popovers - Dark theme */
+  --popover: 0 0% 4%;
+  --popover-foreground: 123 100% 50%;
 
-  /* Primary: Black with white text */
-  --primary: 0 0% 0%;
-  --primary-foreground: 0 0% 100%;
+  /* Primary: Electric Green */
+  --primary: 123 100% 50%; /* #00FF41 */
+  --primary-foreground: 0 0% 0%;
 
-  /* Secondary: Light gray background with black text */
-  --secondary: 0 0% 97%;
-  --secondary-foreground: 0 0% 0%;
+  /* Secondary: Darker Green */
+  --secondary: 123 100% 28%; /* #008F11 */
+  --secondary-foreground: 123 100% 50%;
 
-  /* Muted: Subtle gray with darker text */
-  --muted: 0 0% 96%;
-  --muted-foreground: 0 0% 40%;
+  /* Muted: Dark gray with green text */
+  --muted: 0 0% 6%;
+  --muted-foreground: 123 100% 70%;
 
-  /* Accent: Light gray */
-  --accent: 0 0% 96%;
+  /* Accent: Lighter Green for glows */
+  --accent: 123 100% 70%; /* #66FF66 */
   --accent-foreground: 0 0% 0%;
 
-  /* Destructive: Clean red */
+  /* Destructive: Red for errors */
   --destructive: 0 70% 50%;
   --destructive-foreground: 0 0% 100%;
 
-  /* Borders: Subtle gray */
-  --border: 0 0% 90%;
-  --input: 0 0% 90%;
-  --ring: 0 0% 0%;
+  /* Borders: Green with glow */
+  --border: 123 100% 50%;
+  --input: 123 100% 50%;
+  --ring: 123 100% 50%;
 
-  /* Minimal rounded corners */
-  --radius: 0.375rem;
+  /* Sharp corners for terminal aesthetic */
+  --radius: 0.25rem;
 
-  /* Sidebar: Clean white with black text */
-  --sidebar-background: 0 0% 100%;
-  --sidebar-foreground: 0 0% 0%;
-  --sidebar-primary: 0 0% 0%;
-  --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 0 0% 96%;
-  --sidebar-accent-foreground: 0 0% 0%;
-  --sidebar-border: 0 0% 90%;
-  --sidebar-ring: 0 0% 0%;
+  /* Sidebar: Dark with green accents */
+  --sidebar-background: 0 0% 0%;
+  --sidebar-foreground: 123 100% 50%;
+  --sidebar-primary: 123 100% 50%;
+  --sidebar-primary-foreground: 0 0% 0%;
+  --sidebar-accent: 0 0% 6%;
+  --sidebar-accent-foreground: 123 100% 50%;
+  --sidebar-border: 123 100% 50%;
+  --sidebar-ring: 123 100% 50%;
+
+  /* Custom Cyberpunk Variables */
+  --cyber-green: #00FF41;
+  --cyber-green-dark: #008F11;
+  --cyber-green-light: #66FF66;
+  --cyber-black: #000000;
+  --cyber-gray: #0A0A0A;
+
+  /* Glow effects */
+  --text-glow: 0 0 10px #00FF41;
+  --button-glow: 0 0 20px #00FF41;
+  --box-glow: 0 0 30px rgba(0, 255, 65, 0.3);
+  --border-glow: 0 0 10px rgba(0, 255, 65, 0.5);
 }
 
 .dark {
-  --background: 222.2 84% 4.9%;
-  --foreground: 210 40% 98%;
+  /* Dark mode uses same cyberpunk theme - already dark by default */
+  --background: 0 0% 0%;
+  --foreground: 123 100% 50%;
 
-  --card: 222.2 84% 4.9%;
-  --card-foreground: 210 40% 98%;
+  --card: 0 0% 4%;
+  --card-foreground: 123 100% 50%;
 
-  --popover: 222.2 84% 4.9%;
-  --popover-foreground: 210 40% 98%;
+  --popover: 0 0% 4%;
+  --popover-foreground: 123 100% 50%;
 
-  --primary: 210 40% 98%;
-  --primary-foreground: 222.2 47.4% 11.2%;
+  --primary: 123 100% 50%;
+  --primary-foreground: 0 0% 0%;
 
-  --secondary: 217.2 32.6% 17.5%;
-  --secondary-foreground: 210 40% 98%;
+  --secondary: 123 100% 28%;
+  --secondary-foreground: 123 100% 50%;
 
-  --muted: 217.2 32.6% 17.5%;
-  --muted-foreground: 215 20.2% 65.1%;
+  --muted: 0 0% 6%;
+  --muted-foreground: 123 100% 70%;
 
-  --accent: 217.2 32.6% 17.5%;
-  --accent-foreground: 210 40% 98%;
+  --accent: 123 100% 70%;
+  --accent-foreground: 0 0% 0%;
 
   --destructive: 0 62.8% 30.6%;
   --destructive-foreground: 210 40% 98%;
 
-  --border: 217.2 32.6% 17.5%;
-  --input: 217.2 32.6% 17.5%;
-  --ring: 212.7 26.8% 83.9%;
-  --sidebar-background: 240 5.9% 10%;
-  --sidebar-foreground: 240 4.8% 95.9%;
-  --sidebar-primary: 224.3 76.3% 48%;
-  --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 240 3.7% 15.9%;
-  --sidebar-accent-foreground: 240 4.8% 95.9%;
-  --sidebar-border: 240 3.7% 15.9%;
-  --sidebar-ring: 217.2 91.2% 59.8%;
+  --border: 123 100% 50%;
+  --input: 123 100% 50%;
+  --ring: 123 100% 50%;
+  --sidebar-background: 0 0% 0%;
+  --sidebar-foreground: 123 100% 50%;
+  --sidebar-primary: 123 100% 50%;
+  --sidebar-primary-foreground: 0 0% 0%;
+  --sidebar-accent: 0 0% 6%;
+  --sidebar-accent-foreground: 123 100% 50%;
+  --sidebar-border: 123 100% 50%;
+  --sidebar-ring: 123 100% 50%;
 }
 
 @theme {
@@ -171,33 +189,185 @@ All colors MUST be HSL.
 body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
+  font-family: 'Share Tech Mono', 'Courier Prime', 'Courier New', Monaco, monospace;
   font-feature-settings: "rlig" 1, "calt" 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  letter-spacing: 0.025em;
 }
 
-/* Minimal, clean typography */
+/* Cyberpunk Terminal Typography */
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
-  letter-spacing: -0.025em;
-  color: hsl(var(--foreground));
+  font-family: 'Share Tech Mono', 'Courier Prime', 'Courier New', Monaco, monospace;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--cyber-green);
+  text-transform: uppercase;
+  text-shadow: var(--text-glow);
 }
 
-/* Clean button styles */
+h1 {
+  font-size: 2.5rem;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 1.3;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 1.4;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+
+/* Terminal button styles */
 button {
-  font-weight: 500;
+  font-family: 'Share Tech Mono', 'Courier Prime', 'Courier New', Monaco, monospace;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.3s ease;
 }
 
-/* Subtle shadows for depth */
+/* Terminal input styles */
+input, textarea, select {
+  font-family: 'Share Tech Mono', 'Courier Prime', 'Courier New', Monaco, monospace;
+  background-color: var(--cyber-black);
+  color: var(--cyber-green);
+  border: 1px solid var(--cyber-green);
+  letter-spacing: 0.025em;
+}
+
+/* Monospace code/terminal text */
+code, pre {
+  font-family: 'Share Tech Mono', 'Courier Prime', 'Courier New', Monaco, monospace;
+  color: var(--cyber-green);
+}
+
+/* Cyberpunk Glow Shadows */
 .shadow-sm {
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  box-shadow: 0 0 5px rgba(0, 255, 65, 0.2);
 }
 
 .shadow {
-  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  box-shadow: var(--box-glow);
 }
 
 .shadow-md {
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  box-shadow: 0 0 40px rgba(0, 255, 65, 0.4);
+}
+
+/* Cyberpunk Animations */
+@keyframes pulse-glow {
+  0%, 100% {
+    text-shadow: 0 0 10px #00FF41;
+  }
+  50% {
+    text-shadow: 0 0 20px #00FF41, 0 0 30px #00FF41;
+  }
+}
+
+@keyframes typing-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes scan-line {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes matrix-fall {
+  0% {
+    transform: translateY(-100%);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(0, 255, 65, 0.6);
+  }
+}
+
+/* Utility Classes for Cyberpunk Effects */
+.cyber-glow {
+  text-shadow: var(--text-glow);
+}
+
+.cyber-glow-strong {
+  text-shadow: 0 0 15px #00FF41, 0 0 25px #00FF41;
+}
+
+.cyber-border {
+  border: 1px solid var(--cyber-green);
+  box-shadow: var(--border-glow);
+}
+
+.cyber-button {
+  background-color: transparent;
+  border: 1px solid var(--cyber-green);
+  color: var(--cyber-green);
+  padding: 0.5rem 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: all 0.3s ease;
+}
+
+.cyber-button:hover {
+  background-color: var(--cyber-green);
+  color: var(--cyber-black);
+  box-shadow: var(--button-glow);
+  text-shadow: none;
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.typing-cursor::after {
+  content: '█';
+  animation: typing-cursor 1s step-end infinite;
+}
+
+/* Terminal Window Styling */
+.terminal-window {
+  background-color: var(--cyber-black);
+  border: 1px solid var(--cyber-green);
+  box-shadow: var(--box-glow);
+  position: relative;
+  overflow: hidden;
+}
+
+.terminal-window::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--cyber-green) 50%,
+    transparent 100%);
+  animation: scan-line 4s linear infinite;
+  opacity: 0.3;
 }
