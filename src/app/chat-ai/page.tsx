@@ -1,14 +1,20 @@
 "use client";
 
 import { useState, useRef, useEffect } from 'react';
-import Link from 'next/link';
-import { Upload, Send, FileText, X, Loader2 } from 'lucide-react';
+import { Send, Plus, Menu, Paperclip, User, Bot, Loader2, Trash2, MessageSquare } from 'lucide-react';
 
 interface Message {
   id: string;
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
+}
+
+interface Conversation {
+  id: string;
+  title: string;
+  messages: Message[];
+  createdAt: Date;
 }
 
 interface UploadedFile {
@@ -19,19 +25,31 @@ interface UploadedFile {
 }
 
 export default function ChatAIPage() {
-  const [messages, setMessages] = useState<Message[]>([
+  const [conversations, setConversations] = useState<Conversation[]>([
     {
       id: '1',
-      role: 'assistant',
-      content: '> AI CHAT INITIALIZED\n> FILE UPLOAD SYSTEM READY\n> AWAITING INPUT...',
-      timestamp: new Date(),
+      title: 'New Conversation',
+      messages: [
+        {
+          id: '1',
+          role: 'assistant',
+          content: 'Hello! I\'m your AI assistant. How can I help you today?',
+          timestamp: new Date(),
+        },
+      ],
+      createdAt: new Date(),
     },
   ]);
+  const [currentConversationId, setCurrentConversationId] = useState('1');
   const [input, setInput] = useState('');
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const currentConversation = conversations.find(c => c.id === currentConversationId);
+  const messages = currentConversation?.messages || [];
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -40,6 +58,35 @@ export default function ChatAIPage() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  const handleNewConversation = () => {
+    const newConversation: Conversation = {
+      id: Date.now().toString(),
+      title: 'New Conversation',
+      messages: [
+        {
+          id: Date.now().toString(),
+          role: 'assistant',
+          content: 'Hello! I\'m your AI assistant. How can I help you today?',
+          timestamp: new Date(),
+        },
+      ],
+      createdAt: new Date(),
+    };
+    setConversations(prev => [newConversation, ...prev]);
+    setCurrentConversationId(newConversation.id);
+    setUploadedFiles([]);
+  };
+
+  const handleDeleteConversation = (id: string) => {
+    setConversations(prev => prev.filter(c => c.id !== id));
+    if (currentConversationId === id && conversations.length > 1) {
+      const remainingConversations = conversations.filter(c => c.id !== id);
+      setCurrentConversationId(remainingConversations[0].id);
+    } else if (conversations.length === 1) {
+      handleNewConversation();
+    }
+  };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -50,7 +97,6 @@ export default function ChatAIPage() {
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
 
-      // Only accept .txt and .json files
       if (!file.name.endsWith('.txt') && !file.name.endsWith('.json')) {
         alert(`File "${file.name}" is not supported. Only .txt and .json files are allowed.`);
         continue;
@@ -75,37 +121,9 @@ export default function ChatAIPage() {
 
     setUploadedFiles(prev => [...prev, ...newFiles]);
 
-    // Add system message about file upload
-    if (newFiles.length > 0) {
-      const fileNames = newFiles.map(f => f.name).join(', ');
-      setMessages(prev => [
-        ...prev,
-        {
-          id: Date.now().toString(),
-          role: 'assistant',
-          content: `> FILE(S) UPLOADED: ${fileNames}\n> TOTAL FILES: ${uploadedFiles.length + newFiles.length}\n> AI ASSISTANT CAN NOW ACCESS THIS DATA`,
-          timestamp: new Date(),
-        },
-      ]);
-    }
-
-    // Reset file input
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
-  };
-
-  const removeFile = (fileName: string) => {
-    setUploadedFiles(prev => prev.filter(f => f.name !== fileName));
-    setMessages(prev => [
-      ...prev,
-      {
-        id: Date.now().toString(),
-        role: 'assistant',
-        content: `> FILE REMOVED: ${fileName}\n> TOTAL FILES: ${uploadedFiles.length - 1}`,
-        timestamp: new Date(),
-      },
-    ]);
   };
 
   const handleSendMessage = async (e: React.FormEvent) => {
@@ -119,12 +137,21 @@ export default function ChatAIPage() {
       timestamp: new Date(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    // Update conversation with user message
+    setConversations(prev => prev.map(conv =>
+      conv.id === currentConversationId
+        ? {
+            ...conv,
+            messages: [...conv.messages, userMessage],
+            title: conv.title === 'New Conversation' ? input.slice(0, 30) : conv.title
+          }
+        : conv
+    ));
+
     setInput('');
     setIsLoading(true);
 
     try {
-      // Call AI API with message and file context
       const response = await fetch('/api/chat-ai', {
         method: 'POST',
         headers: {
@@ -150,97 +177,107 @@ export default function ChatAIPage() {
         timestamp: new Date(),
       };
 
-      setMessages(prev => [...prev, assistantMessage]);
+      setConversations(prev => prev.map(conv =>
+        conv.id === currentConversationId
+          ? { ...conv, messages: [...conv.messages, assistantMessage] }
+          : conv
+      ));
     } catch (error) {
       console.error('Error sending message:', error);
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: '> ERROR: Failed to process request\n> Please try again or check your connection',
+        content: 'Sorry, I encountered an error processing your request. Please try again.',
         timestamp: new Date(),
       };
-      setMessages(prev => [...prev, errorMessage]);
+      setConversations(prev => prev.map(conv =>
+        conv.id === currentConversationId
+          ? { ...conv, messages: [...conv.messages, errorMessage] }
+          : conv
+      ));
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-black flex">
-      {/* Sidebar Navigation */}
-      <aside className="w-48 bg-black border-r border-[#00FF41] flex flex-col p-6">
-        <div className="mb-8">
-          <h1 className="text-[#00FF41] text-xl font-bold tracking-wider cyber-glow">
-            AAAYAFUJ OS
-          </h1>
+    <div className="flex h-screen bg-white dark:bg-gray-900">
+      {/* Sidebar */}
+      <aside
+        className={`${
+          sidebarOpen ? 'w-64' : 'w-0'
+        } transition-all duration-300 bg-gray-50 dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 flex flex-col overflow-hidden`}
+      >
+        <div className="p-4 border-b border-gray-200 dark:border-gray-800">
+          <button
+            onClick={handleNewConversation}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm font-medium"
+          >
+            <Plus className="w-4 h-4" />
+            New Chat
+          </button>
         </div>
 
-        <nav className="flex-1 space-y-1">
-          <h3 className="text-[#00FF41] text-xs font-bold mb-3 tracking-wider opacity-70">
-            CONTENT+HY
-          </h3>
+        <div className="flex-1 overflow-y-auto p-2">
+          {conversations.map((conv) => (
+            <div
+              key={conv.id}
+              className={`group flex items-center justify-between gap-2 px-3 py-2 mb-1 rounded-lg cursor-pointer transition-colors ${
+                conv.id === currentConversationId
+                  ? 'bg-gray-200 dark:bg-gray-800'
+                  : 'hover:bg-gray-100 dark:hover:bg-gray-900'
+              }`}
+              onClick={() => setCurrentConversationId(conv.id)}
+            >
+              <div className="flex items-center gap-2 flex-1 min-w-0">
+                <MessageSquare className="w-4 h-4 flex-shrink-0 text-gray-600 dark:text-gray-400" />
+                <span className="text-sm truncate">{conv.title}</span>
+              </div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteConversation(conv.id);
+                }}
+                className="opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-300 dark:hover:bg-gray-700 rounded transition-opacity"
+              >
+                <Trash2 className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+              </button>
+            </div>
+          ))}
+        </div>
 
-          <Link
-            href="/"
-            className="block text-[#00FF41] text-sm py-2 px-3 hover:bg-[#00FF4110] transition-all hover:border-l-2 hover:border-[#00FF41]"
-          >
-            &gt; Dashboard
-          </Link>
-
-          <Link
-            href="/ai-brain"
-            className="block text-[#00FF41] text-sm py-2 px-3 hover:bg-[#00FF4110] transition-all hover:border-l-2 hover:border-[#00FF41]"
-          >
-            &gt; AI Brain
-          </Link>
-
-          <Link
-            href="/chat-ai"
-            className="block text-[#00FF41] text-sm py-2 px-3 hover:bg-[#00FF4110] transition-all border-l-2 border-[#00FF41] cyber-glow"
-          >
-            &gt; Chat AI
-          </Link>
-
-          <Link
-            href="/network-tools"
-            className="block text-[#00FF41] text-sm py-2 px-3 hover:bg-[#00FF4110] transition-all hover:border-l-2 hover:border-[#00FF41]"
-          >
-            &gt; Network Tools
-          </Link>
-
-          <Link
-            href="/settings"
-            className="block text-[#00FF41] text-sm py-2 px-3 hover:bg-[#00FF4110] transition-all hover:border-l-2 hover:border-[#00FF41]"
-          >
-            &gt; Settings
-          </Link>
-        </nav>
+        <div className="p-4 border-t border-gray-200 dark:border-gray-800">
+          <div className="text-xs text-gray-500 dark:text-gray-500">
+            {uploadedFiles.length > 0 && (
+              <div className="mb-2">
+                <span className="font-medium">{uploadedFiles.length} file(s) attached</span>
+              </div>
+            )}
+            <span>AI Chat Assistant</span>
+          </div>
+        </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col p-8">
+      <main className="flex-1 flex flex-col">
         {/* Header */}
-        <div className="mb-6">
-          <h2 className="text-3xl font-bold text-[#00FF41] mb-2 cyber-glow-strong">
-            CHAT AI - FILE-ENHANCED ASSISTANT
-          </h2>
-          <p className="text-[#00FF41] text-sm opacity-80">
-            Upload .txt and .json files for the AI to analyze and reference
-          </p>
-        </div>
-
-        {/* File Upload Section */}
-        <div className="terminal-window rounded p-4 mb-4">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-[#00FF41] font-bold tracking-wider text-sm">
-              &gt; UPLOADED FILES ({uploadedFiles.length})
-            </h3>
+        <header className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-800">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+            <h1 className="text-lg font-semibold">ChatGPT-Style AI</h1>
+          </div>
+          <div className="flex items-center gap-2">
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="cyber-button text-xs py-1 px-3 flex items-center gap-2"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+              title="Attach files"
             >
-              <Upload className="w-3 h-3" />
-              UPLOAD FILE
+              <Paperclip className="w-5 h-5" />
             </button>
             <input
               ref={fileInputRef}
@@ -251,111 +288,103 @@ export default function ChatAIPage() {
               className="hidden"
             />
           </div>
+        </header>
 
-          {uploadedFiles.length > 0 ? (
-            <div className="flex flex-wrap gap-2">
-              {uploadedFiles.map((file, index) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-2 bg-[#00FF4110] border border-[#00FF41] rounded px-3 py-2"
-                >
-                  <FileText className="w-4 h-4 text-[#00FF41]" />
-                  <span className="text-[#00FF41] text-xs">{file.name}</span>
-                  <span className="text-[#00FF41] text-xs opacity-50">
-                    ({(file.size / 1024).toFixed(1)} KB)
-                  </span>
-                  <button
-                    onClick={() => removeFile(file.name)}
-                    className="text-[#00FF41] hover:text-red-500 transition-colors"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-6 border-2 border-dashed border-[#00FF41] rounded opacity-50">
-              <Upload className="w-8 h-8 text-[#00FF41] mx-auto mb-2" />
-              <p className="text-[#00FF41] text-xs">
-                No files uploaded. Click UPLOAD FILE to add .txt or .json files.
-              </p>
-            </div>
-          )}
-        </div>
-
-        {/* Chat Messages Area */}
-        <div className="terminal-window rounded p-6 flex-1 flex flex-col mb-4 overflow-hidden">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-3 h-3 rounded-full bg-[#00FF41] pulse-glow"></div>
-            <h3 className="text-[#00FF41] font-bold tracking-wider">
-              &gt; CONVERSATION
-            </h3>
-          </div>
-
-          <div className="flex-1 overflow-y-auto mb-4 space-y-4 pr-2">
+        {/* Messages Area */}
+        <div className="flex-1 overflow-y-auto">
+          <div className="max-w-3xl mx-auto py-8 px-4">
             {messages.map((message) => (
               <div
                 key={message.id}
-                className={`p-4 rounded border ${
-                  message.role === 'user'
-                    ? 'bg-[#00FF4105] border-[#00FF41] ml-8'
-                    : 'bg-black border-[#008F11] mr-8'
+                className={`mb-8 flex gap-4 ${
+                  message.role === 'user' ? 'justify-end' : 'justify-start'
                 }`}
               >
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-[#00FF41] text-xs font-bold">
-                    {message.role === 'user' ? '> USER' : '> AI_ASSISTANT'}
-                  </span>
-                  <span className="text-[#00FF41] text-xs opacity-50">
-                    {message.timestamp.toLocaleTimeString()}
+                {message.role === 'assistant' && (
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center flex-shrink-0">
+                    <Bot className="w-5 h-5 text-white" />
+                  </div>
+                )}
+                <div className={`flex flex-col gap-2 max-w-2xl ${message.role === 'user' ? 'items-end' : 'items-start'}`}>
+                  <div
+                    className={`rounded-2xl px-4 py-3 ${
+                      message.role === 'user'
+                        ? 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100'
+                        : 'bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100'
+                    }`}
+                  >
+                    <p className="text-[15px] leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                  </div>
+                  <span className="text-xs text-gray-500 dark:text-gray-500 px-2">
+                    {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
-                <p className="text-[#00FF41] text-sm whitespace-pre-wrap font-mono">
-                  {message.content}
-                </p>
+                {message.role === 'user' && (
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center flex-shrink-0">
+                    <User className="w-5 h-5 text-white" />
+                  </div>
+                )}
               </div>
             ))}
             {isLoading && (
-              <div className="p-4 rounded border bg-black border-[#008F11] mr-8 flex items-center gap-3">
-                <Loader2 className="w-4 h-4 text-[#00FF41] animate-spin" />
-                <span className="text-[#00FF41] text-sm">
-                  AI is processing...
-                </span>
+              <div className="mb-8 flex gap-4 justify-start">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center flex-shrink-0">
+                  <Bot className="w-5 h-5 text-white" />
+                </div>
+                <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <Loader2 className="w-4 h-4 animate-spin text-teal-500" />
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Thinking...</span>
+                  </div>
+                </div>
               </div>
             )}
             <div ref={messagesEndRef} />
           </div>
-
-          {/* Message Input */}
-          <form onSubmit={handleSendMessage} className="flex gap-2">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Type your message..."
-              disabled={isLoading}
-              className="flex-1 bg-black border border-[#00FF41] rounded px-4 py-3 text-[#00FF41] placeholder-[#00FF4150] focus:outline-none focus:shadow-[0_0_20px_rgba(0,255,65,0.3)] transition-all disabled:opacity-50"
-            />
-            <button
-              type="submit"
-              disabled={isLoading || !input.trim()}
-              className="cyber-button flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Send className="w-4 h-4" />
-              SEND
-            </button>
-          </form>
         </div>
 
-        {/* System Status */}
-        <div className="terminal-window rounded p-4">
-          <div className="flex items-center justify-between text-[#00FF41] text-xs">
-            <span>
-              <span className="font-bold">STATUS:</span> {isLoading ? 'Processing...' : 'Ready'}
-            </span>
-            <span>FILES: {uploadedFiles.length}</span>
-            <span>MESSAGES: {messages.length}</span>
-            <span className="cyber-glow">AI: ONLINE</span>
+        {/* Input Area */}
+        <div className="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+          <div className="max-w-3xl mx-auto px-4 py-4">
+            {uploadedFiles.length > 0 && (
+              <div className="mb-3 flex flex-wrap gap-2">
+                {uploadedFiles.map((file, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-xs"
+                  >
+                    <Paperclip className="w-3 h-3" />
+                    <span>{file.name}</span>
+                    <button
+                      onClick={() => setUploadedFiles(prev => prev.filter((_, i) => i !== index))}
+                      className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+            <form onSubmit={handleSendMessage} className="flex gap-3">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Message ChatGPT..."
+                disabled={isLoading}
+                className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed text-[15px]"
+              />
+              <button
+                type="submit"
+                disabled={isLoading || !input.trim()}
+                className="px-5 py-3 bg-teal-500 hover:bg-teal-600 text-white rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-teal-500 flex items-center justify-center"
+              >
+                <Send className="w-5 h-5" />
+              </button>
+            </form>
+            <p className="text-xs text-gray-500 dark:text-gray-500 text-center mt-3">
+              AI can make mistakes. Consider checking important information.
+            </p>
           </div>
         </div>
       </main>

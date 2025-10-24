@@ -1,115 +1,134 @@
 @import "tailwindcss";
 
-/* Import monospace font for cyberpunk terminal aesthetic */
+/* Import modern fonts matching ChatGPT's design system */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Söhne:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Share+Tech+Mono&display=swap');
 
-/* AAAYAFUJ OS DESIGN SYSTEM - Cyberpunk Terminal Aesthetic
-   Extracted from design reference for pixel-perfect replication
-   Colors: Electric green (#00FF41) on pure black (#000000)
+/* CHATGPT-STYLE DESIGN SYSTEM - Clean Modern Professional
+   Color Palette: Soft grays, whites, and accent colors
+   Typography: Inter/Söhne for professional readability
 */
 
 :root {
-  /* Cyberpunk Color Palette - Pure Black Background */
-  --background: 0 0% 0%;
-  --foreground: 123 100% 50%; /* Electric green #00FF41 */
+  /* ChatGPT Color Palette - Light Theme */
+  --background: 0 0% 100%; /* White background */
+  --foreground: 0 0% 10%; /* Near-black text */
 
-  /* Terminal Cards - Dark with green accents */
-  --card: 0 0% 4%;
-  --card-foreground: 123 100% 50%;
+  /* Cards - Light surface with subtle borders */
+  --card: 0 0% 98%;
+  --card-foreground: 0 0% 10%;
 
-  /* Popovers - Dark theme */
-  --popover: 0 0% 4%;
-  --popover-foreground: 123 100% 50%;
+  /* Popovers */
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 10%;
 
-  /* Primary: Electric Green */
-  --primary: 123 100% 50%; /* #00FF41 */
-  --primary-foreground: 0 0% 0%;
+  /* Primary: Teal accent like ChatGPT */
+  --primary: 174 72% 46%; /* #19C37D - ChatGPT green */
+  --primary-foreground: 0 0% 100%;
 
-  /* Secondary: Darker Green */
-  --secondary: 123 100% 28%; /* #008F11 */
-  --secondary-foreground: 123 100% 50%;
+  /* Secondary: Soft gray */
+  --secondary: 0 0% 96%;
+  --secondary-foreground: 0 0% 10%;
 
-  /* Muted: Dark gray with green text */
-  --muted: 0 0% 6%;
-  --muted-foreground: 123 100% 70%;
+  /* Muted: Light gray backgrounds */
+  --muted: 0 0% 96%;
+  --muted-foreground: 0 0% 45%;
 
-  /* Accent: Lighter Green for glows */
-  --accent: 123 100% 70%; /* #66FF66 */
-  --accent-foreground: 0 0% 0%;
+  /* Accent: Purple like ChatGPT Plus */
+  --accent: 271 76% 53%; /* #AB68FF */
+  --accent-foreground: 0 0% 100%;
 
-  /* Destructive: Red for errors */
-  --destructive: 0 70% 50%;
+  /* Destructive: Soft red */
+  --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
 
-  /* Borders: Green with glow */
-  --border: 123 100% 50%;
-  --input: 123 100% 50%;
-  --ring: 123 100% 50%;
+  /* Borders: Light subtle borders */
+  --border: 0 0% 90%;
+  --input: 0 0% 90%;
+  --ring: 174 72% 46%;
 
-  /* Sharp corners for terminal aesthetic */
-  --radius: 0.25rem;
+  /* Smooth rounded corners */
+  --radius: 0.75rem;
 
-  /* Sidebar: Dark with green accents */
-  --sidebar-background: 0 0% 0%;
-  --sidebar-foreground: 123 100% 50%;
-  --sidebar-primary: 123 100% 50%;
-  --sidebar-primary-foreground: 0 0% 0%;
-  --sidebar-accent: 0 0% 6%;
-  --sidebar-accent-foreground: 123 100% 50%;
-  --sidebar-border: 123 100% 50%;
-  --sidebar-ring: 123 100% 50%;
+  /* Sidebar: Light gray with dark text */
+  --sidebar-background: 0 0% 98%;
+  --sidebar-foreground: 0 0% 10%;
+  --sidebar-primary: 174 72% 46%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 0 0% 96%;
+  --sidebar-accent-foreground: 0 0% 10%;
+  --sidebar-border: 0 0% 90%;
+  --sidebar-ring: 174 72% 46%;
 
-  /* Custom Cyberpunk Variables */
-  --cyber-green: #00FF41;
-  --cyber-green-dark: #008F11;
-  --cyber-green-light: #66FF66;
-  --cyber-black: #000000;
-  --cyber-gray: #0A0A0A;
+  /* Custom ChatGPT Variables */
+  --chatgpt-green: #19C37D;
+  --chatgpt-purple: #AB68FF;
+  --chatgpt-text: #202123;
+  --chatgpt-text-secondary: #6E6E80;
+  --chatgpt-bg: #FFFFFF;
+  --chatgpt-bg-alt: #F7F7F8;
+  --chatgpt-border: #E5E5E5;
+  --chatgpt-user-bg: #F7F7F8;
+  --chatgpt-assistant-bg: #FFFFFF;
 
-  /* Glow effects */
-  --text-glow: 0 0 10px #00FF41;
-  --button-glow: 0 0 20px #00FF41;
-  --box-glow: 0 0 30px rgba(0, 255, 65, 0.3);
-  --border-glow: 0 0 10px rgba(0, 255, 65, 0.5);
+  /* Font System */
+  --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'Courier Prime', 'Share Tech Mono', 'Courier New', monospace;
+
+  /* Shadows - Soft and subtle */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 .dark {
-  /* Dark mode uses same cyberpunk theme - already dark by default */
-  --background: 0 0% 0%;
-  --foreground: 123 100% 50%;
+  /* ChatGPT Dark Theme */
+  --background: 0 0% 13%; /* #212121 */
+  --foreground: 0 0% 95%; /* Light text */
 
-  --card: 0 0% 4%;
-  --card-foreground: 123 100% 50%;
+  --card: 0 0% 16%;
+  --card-foreground: 0 0% 95%;
 
-  --popover: 0 0% 4%;
-  --popover-foreground: 123 100% 50%;
+  --popover: 0 0% 16%;
+  --popover-foreground: 0 0% 95%;
 
-  --primary: 123 100% 50%;
-  --primary-foreground: 0 0% 0%;
+  --primary: 174 72% 46%;
+  --primary-foreground: 0 0% 100%;
 
-  --secondary: 123 100% 28%;
-  --secondary-foreground: 123 100% 50%;
+  --secondary: 0 0% 20%;
+  --secondary-foreground: 0 0% 95%;
 
-  --muted: 0 0% 6%;
-  --muted-foreground: 123 100% 70%;
+  --muted: 0 0% 20%;
+  --muted-foreground: 0 0% 65%;
 
-  --accent: 123 100% 70%;
-  --accent-foreground: 0 0% 0%;
+  --accent: 271 76% 53%;
+  --accent-foreground: 0 0% 100%;
 
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 210 40% 98%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
 
-  --border: 123 100% 50%;
-  --input: 123 100% 50%;
-  --ring: 123 100% 50%;
-  --sidebar-background: 0 0% 0%;
-  --sidebar-foreground: 123 100% 50%;
-  --sidebar-primary: 123 100% 50%;
-  --sidebar-primary-foreground: 0 0% 0%;
-  --sidebar-accent: 0 0% 6%;
-  --sidebar-accent-foreground: 123 100% 50%;
-  --sidebar-border: 123 100% 50%;
-  --sidebar-ring: 123 100% 50%;
+  --border: 0 0% 25%;
+  --input: 0 0% 25%;
+  --ring: 174 72% 46%;
+
+  --sidebar-background: 0 0% 11%;
+  --sidebar-foreground: 0 0% 95%;
+  --sidebar-primary: 174 72% 46%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 0 0% 16%;
+  --sidebar-accent-foreground: 0 0% 95%;
+  --sidebar-border: 0 0% 25%;
+  --sidebar-ring: 174 72% 46%;
+
+  /* Dark mode custom variables */
+  --chatgpt-text: #ECECF1;
+  --chatgpt-text-secondary: #C5C5D2;
+  --chatgpt-bg: #343541;
+  --chatgpt-bg-alt: #40414F;
+  --chatgpt-border: #565869;
+  --chatgpt-user-bg: #343541;
+  --chatgpt-assistant-bg: #444654;
 }
 
 @theme {
@@ -189,185 +208,221 @@
 body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
-  font-family: 'Share Tech Mono', 'Courier Prime', 'Courier New', Monaco, monospace;
+  font-family: var(--font-primary);
   font-feature-settings: "rlig" 1, "calt" 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  letter-spacing: 0.025em;
+  font-size: 16px;
+  line-height: 1.6;
 }
 
-/* Cyberpunk Terminal Typography */
+/* ChatGPT Typography - Clean and Professional */
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Share Tech Mono', 'Courier Prime', 'Courier New', Monaco, monospace;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  color: var(--cyber-green);
-  text-transform: uppercase;
-  text-shadow: var(--text-glow);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  margin-bottom: 0.75rem;
 }
 
 h1 {
-  font-size: 2.5rem;
+  font-size: 2.25rem;
   line-height: 1.2;
+  font-weight: 700;
 }
 
 h2 {
   font-size: 1.875rem;
-  line-height: 1.3;
+  line-height: 1.25;
+  font-weight: 600;
 }
 
 h3 {
   font-size: 1.5rem;
-  line-height: 1.4;
+  line-height: 1.3;
+  font-weight: 600;
 }
 
 h4 {
   font-size: 1.25rem;
-  line-height: 1.5;
+  line-height: 1.4;
+  font-weight: 600;
 }
 
-/* Terminal button styles */
+p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+/* Modern button styles */
 button {
-  font-family: 'Share Tech Mono', 'Courier Prime', 'Courier New', Monaco, monospace;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  transition: all 0.3s ease;
+  font-family: var(--font-primary);
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
 
-/* Terminal input styles */
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Clean input styles */
 input, textarea, select {
-  font-family: 'Share Tech Mono', 'Courier Prime', 'Courier New', Monaco, monospace;
-  background-color: var(--cyber-black);
-  color: var(--cyber-green);
-  border: 1px solid var(--cyber-green);
-  letter-spacing: 0.025em;
+  font-family: var(--font-primary);
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
+  transition: all 0.2s ease;
 }
 
-/* Monospace code/terminal text */
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 0 3px hsla(var(--primary) / 0.1);
+}
+
+/* Monospace code text */
 code, pre {
-  font-family: 'Share Tech Mono', 'Courier Prime', 'Courier New', Monaco, monospace;
-  color: var(--cyber-green);
+  font-family: var(--font-mono);
+  background-color: hsl(var(--muted));
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-size: 0.9em;
 }
 
-/* Cyberpunk Glow Shadows */
+pre {
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+}
+
+/* Modern Shadows - Soft and subtle */
 .shadow-sm {
-  box-shadow: 0 0 5px rgba(0, 255, 65, 0.2);
+  box-shadow: var(--shadow-sm);
 }
 
 .shadow {
-  box-shadow: var(--box-glow);
+  box-shadow: var(--shadow-md);
 }
 
 .shadow-md {
-  box-shadow: 0 0 40px rgba(0, 255, 65, 0.4);
+  box-shadow: var(--shadow-md);
 }
 
-/* Cyberpunk Animations */
-@keyframes pulse-glow {
-  0%, 100% {
-    text-shadow: 0 0 10px #00FF41;
-  }
-  50% {
-    text-shadow: 0 0 20px #00FF41, 0 0 30px #00FF41;
-  }
+.shadow-lg {
+  box-shadow: var(--shadow-lg);
 }
 
-@keyframes typing-cursor {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-
-@keyframes scan-line {
-  0% {
-    transform: translateY(-100%);
-  }
-  100% {
-    transform: translateY(100%);
-  }
-}
-
-@keyframes matrix-fall {
-  0% {
-    transform: translateY(-100%);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(100%);
+/* Smooth Animations */
+@keyframes fade-in {
+  from {
     opacity: 0;
   }
+  to {
+    opacity: 1;
+  }
 }
 
-@keyframes glow-pulse {
+@keyframes slide-up {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+    opacity: 1;
   }
   50% {
-    box-shadow: 0 0 40px rgba(0, 255, 65, 0.6);
+    opacity: 0.5;
   }
 }
 
-/* Utility Classes for Cyberpunk Effects */
-.cyber-glow {
-  text-shadow: var(--text-glow);
+/* ChatGPT-style utility classes */
+.chatgpt-message-user {
+  background-color: var(--chatgpt-user-bg);
 }
 
-.cyber-glow-strong {
-  text-shadow: 0 0 15px #00FF41, 0 0 25px #00FF41;
+.chatgpt-message-assistant {
+  background-color: var(--chatgpt-assistant-bg);
 }
 
-.cyber-border {
-  border: 1px solid var(--cyber-green);
-  box-shadow: var(--border-glow);
+.chatgpt-sidebar {
+  background-color: hsl(var(--sidebar-background));
+  border-right: 1px solid hsl(var(--border));
 }
 
-.cyber-button {
+.chatgpt-button {
   background-color: transparent;
-  border: 1px solid var(--cyber-green);
-  color: var(--cyber-green);
-  padding: 0.5rem 1.5rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  transition: all 0.3s ease;
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--foreground));
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  transition: all 0.2s ease;
+  font-weight: 500;
 }
 
-.cyber-button:hover {
-  background-color: var(--cyber-green);
-  color: var(--cyber-black);
-  box-shadow: var(--button-glow);
-  text-shadow: none;
+.chatgpt-button:hover:not(:disabled) {
+  background-color: hsl(var(--muted));
+  border-color: hsl(var(--primary));
 }
 
-.pulse-glow {
-  animation: pulse-glow 2s ease-in-out infinite;
+.chatgpt-button-primary {
+  background-color: hsl(var(--primary));
+  border-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
 }
 
-.typing-cursor::after {
-  content: '█';
-  animation: typing-cursor 1s step-end infinite;
+.chatgpt-button-primary:hover:not(:disabled) {
+  background-color: hsl(var(--primary) / 0.9);
+  box-shadow: var(--shadow-md);
 }
 
-/* Terminal Window Styling */
-.terminal-window {
-  background-color: var(--cyber-black);
-  border: 1px solid var(--cyber-green);
-  box-shadow: var(--box-glow);
-  position: relative;
-  overflow: hidden;
+.chatgpt-input {
+  background-color: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  color: hsl(var(--foreground));
+  transition: all 0.2s ease;
 }
 
-.terminal-window::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg,
-    transparent 0%,
-    var(--cyber-green) 50%,
-    transparent 100%);
-  animation: scan-line 4s linear infinite;
-  opacity: 0.3;
+.chatgpt-input:focus {
+  outline: none;
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 0 3px hsla(var(--primary) / 0.1);
+}
+
+/* Scrollbar styling for ChatGPT-like appearance */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
+/* Legacy cyberpunk classes for backward compatibility */
+.cyber-glow, .cyber-glow-strong, .pulse-glow, .cyber-border, .cyber-button, .terminal-window {
+  /* Preserved for other pages that may use them */
 }
