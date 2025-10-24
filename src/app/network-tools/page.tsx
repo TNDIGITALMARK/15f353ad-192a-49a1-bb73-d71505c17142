@@ -51,6 +51,13 @@ export default function NetworkToolsPage() {
           </Link>
 
           <Link
+            href="/chat-ai"
+            className="block text-[#00FF41] text-sm py-2 px-3 hover:bg-[#00FF4110] transition-all hover:border-l-2 hover:border-[#00FF41]"
+          >
+            &gt; Chat AI
+          </Link>
+
+          <Link
             href="/network-tools"
             className="block text-[#00FF41] text-sm py-2 px-3 hover:bg-[#00FF4110] transition-all border-l-2 border-[#00FF41] cyber-glow"
           >
